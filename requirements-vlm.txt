@@ -1,2 +1,7 @@
 -r requirements-server.txt
 peft==0.17.1
+# Hulu-Med's remote processor imports these even for image-only use.
+opencv-python-headless==4.10.0.84
+decord==0.6.0
+ffmpeg-python==0.2.0
+imageio==2.38.0

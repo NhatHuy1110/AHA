@@ -31,7 +31,7 @@ Trên server:
 ```bash
 git clone https://github.com/NhatHuy1110/AHA.git && cd AHA
 python -m pip install huggingface_hub && hf auth login
-python scripts/fetch_data.py --repo NhatHuy1110/AHA --protocol AHA-M1-v2.1
+python scripts/fetch_data.py --repo NhatHuy1110/AHA --protocol AHA-M1-v2.2
 ```
 
 Sau khi cài môi trường (mục 3), `python -m aha verify` phải khớp toàn bộ hash. Dữ liệu TMVP/MedHorizon vẫn theo điều khoản gốc: không chuyển dataset sang public khi chưa kiểm tra quyền phân phối lại.
@@ -103,7 +103,15 @@ bash scripts/evaluate_test.sh          # chỉ sau khi đã ghi log; chạy lạ
 
 ## 8. VLM comparator (tuỳ chọn)
 
-Như v1: `requirements-vlm.txt`, tải Qwen3-VL-4B đúng revision trong `assets/models.lock.json`, rồi `aha vlm-predict` / `aha vlm-train`. Nhánh này cần `artifacts/features/surgformer` và chưa được chạy với weights thật.
+```bash
+python -m pip install -r requirements-vlm.txt
+python scripts/fetch_encoder.py --kind vlm --family qwen3vl --id Qwen/Qwen3-VL-4B-Instruct --name qwen3vl_4b --revision ebb281ec70b05090aa6165b016eac8ec08e71b17
+python scripts/fetch_encoder.py --kind vlm --family qwen3vl --id Qwen/Qwen3-VL-8B-Instruct --name qwen3vl_8b --revision 0c351dd01ed87e9c1b53cbc748cba10e6187ff3b
+python scripts/fetch_encoder.py --kind vlm --family hulumed --id ZJU-AI4H/Hulu-Med-7B --name hulumed_7b --revision 258594714a0d3835eb2c9e4cc165a4242e606d71
+bash scripts/run_server.sh vlm
+```
+
+Giai đoạn `vlm` chạy zero-shot cho ba model với hai giao thức frame (`uniform` 64, `retrieval` 48), rồi LoRA cho Qwen3-VL-4B với 3 seed, chấm trên test hồi cứu và ghi vào `runs/seed_summary.json`. Cần `artifacts/features/surgformer` và kết quả `runs/full/seed_17` (để tính paired delta). Cài `requirements-vlm.txt` sau khi train xong model chính, và kiểm tra numpy vẫn là bản đã ghim.
 
 ## 9. Đổi protocol
 

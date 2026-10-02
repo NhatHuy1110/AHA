@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 import torch
-from aha.vlm import sampled_seconds,encode
+from aha.vlm import sampled_seconds,encode,parse
 
 def test_vlm_samples_are_label_free_unique_bounded():
     phase=np.ones((1000,12),np.float32)*.01; phase[400:600,3]=.9
@@ -31,3 +31,10 @@ def test_sft_supervises_only_answer_tokens():
 def test_sft_rejects_mismatched_prefix():
     with pytest.raises(ValueError,match='prefix mismatch'):
         encode(Processor(True),[dict(role='user')],[],device='cpu',target=dict(answer='A',second=1))
+
+def test_reply_parsing_is_lenient_but_never_invents_values():
+    assert parse('{"answer": "B", "second": 120}')==('B',120)
+    assert parse('```json\n{"answer":"c","second":"45"}\n```')==('C',45)
+    assert parse('The answer is D. second: 300')==('D',300)
+    assert parse('I cannot tell.')==(None,None)
+    assert parse('{"answer": "E", "second": 1.5}')==(None,None)

@@ -21,7 +21,7 @@ PHASE_NAMES = dict(zip(PHASES, [
 TOOL_NAMES = dict(zip(TOOLS, [
     'Needle Holder', 'Aspirator', 'Endotherm Knife', 'Small Needle Holder',
     'Occlusion Forceps', 'Knife', 'Atrial Retractor', 'Scissor']))
-PROTOCOL = 'AHA-M1-v2.1'
+PROTOCOL = 'AHA-M1-v2.2'
 
 def qa_files(root, split, qa='original'):
     """(questions, gold) paths. Test gold of either kind lives under data/private."""

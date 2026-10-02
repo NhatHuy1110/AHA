@@ -1,5 +1,5 @@
 {
-  "protocol": "AHA-M1-v2.1",
+  "protocol": "AHA-M1-v2.2",
   "features": {
     "name": "surgformer"
   },

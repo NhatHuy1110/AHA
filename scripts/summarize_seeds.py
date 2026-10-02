@@ -26,5 +26,20 @@ for method in ('surgformer_index','prior'):
         if path.exists():
             m=json.loads(path.read_text())['primary']
             result[f'{method}/test_{qa}']={k:m[k] for k in KEYS}
+# Multimodal-LLM comparators: zero-shot runs are single deterministic runs; LoRA has seeds.
+vlm=root/'runs/vlm'
+if vlm.exists():
+    for directory in sorted(vlm.iterdir()):
+        for qa in ('original','derived'):
+            single=directory/f'test_{qa}_metrics/metrics.json'
+            seeds=sorted(directory.glob(f'seed_*/test_{qa}_metrics/metrics.json'))
+            if single.exists():
+                m=json.loads(single.read_text())['primary']
+                result[f'vlm/{directory.name}/test_{qa}']={k:m[k] for k in KEYS}
+            elif seeds:
+                metrics=[json.loads(p.read_text())['primary'] for p in seeds]
+                result[f'vlm/{directory.name}/test_{qa}']={k:dict(mean=float(np.mean([m[k] for m in metrics])),
+                    std=float(np.std([m[k] for m in metrics],ddof=1)) if len(metrics)>1 else None,
+                    seeds=[m[k] for m in metrics]) for k in KEYS if all(m[k] is not None for m in metrics)}
 (root/'runs/seed_summary.json').write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result,indent=2))

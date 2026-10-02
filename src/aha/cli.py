@@ -25,10 +25,13 @@ def main():
     a.add_argument('--method',choices=['prior','surgformer_index'],required=True); a.add_argument('--out',required=True)
     a.add_argument('--qa',choices=['original','derived'],default='original')
     for command in ('vlm-predict','vlm-train'):
-        a=sub.add_parser(command); a.add_argument('--config',default='configs/full.json'); a.add_argument('--revision',required=True)
+        a=sub.add_parser(command); a.add_argument('--config',default='configs/full.json')
+        a.add_argument('--model',required=True,help='folder under assets/vlm')
         a.add_argument('--out',required=True); a.add_argument('--device',default='cuda'); a.add_argument('--budget',type=int,default=48)
+        a.add_argument('--frames',choices=['retrieval','uniform'],default='retrieval')
         if command=='vlm-predict':
             a.add_argument('--adapter'); a.add_argument('--split',choices=['val','test'],default='val')
+            a.add_argument('--qa',choices=['original','derived'],default='original')
         else:
             a.add_argument('--seed',type=int,default=17); a.add_argument('--epochs',type=int,default=3)
     args=vars(p.parse_args()); cmd=args.pop('command'); root=args.pop('root').resolve()
