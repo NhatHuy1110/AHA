@@ -103,6 +103,20 @@ def parse(raw):
     return (answer if answer in ('A','B','C','D') else None,
             second if isinstance(second,int) and not isinstance(second,bool) else None)
 
+def chunk_vision_encoder(encoder,images=8):
+    """Hulu-Med's SDPA vision attention builds one dense mask over every frame's patches even though
+    attention never crosses frames. Encoding a few frames at a time is equivalent and fits in memory."""
+    inner=encoder.forward
+    def forward(pixel_values,grid_sizes,merge_sizes=None):
+        sizes=grid_sizes.prod(dim=1).tolist(); outputs=[]; start=0
+        for i in range(0,len(sizes),images):
+            n=sum(sizes[i:i+images])
+            outputs.append(inner(pixel_values[start:start+n],grid_sizes[i:i+images],
+                                 None if merge_sizes is None else merge_sizes[i:i+images]))
+            start+=n
+        return torch.cat(outputs,0)
+    encoder.forward=forward
+
 def load(root,name,device,adapter=None):
     source=Path(root)/'assets/vlm'/name
     origin=read_json(source/'source.json')
@@ -118,6 +132,7 @@ def load(root,name,device,adapter=None):
         processor=AutoProcessor.from_pretrained(source,local_files_only=True,trust_remote_code=True)
         model=AutoModelForCausalLM.from_pretrained(source,local_files_only=True,trust_remote_code=True,
                   torch_dtype=torch.bfloat16,attn_implementation='sdpa').to(device)
+        chunk_vision_encoder(model.get_model().get_vision_encoder())
     else:
         raise ValueError(origin['family'])
     if adapter:
