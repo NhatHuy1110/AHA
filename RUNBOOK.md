@@ -31,7 +31,7 @@ Trên server:
 ```bash
 git clone https://github.com/NhatHuy1110/AHA.git && cd AHA
 python -m pip install huggingface_hub && hf auth login
-python scripts/fetch_data.py --repo NhatHuy1110/AHA --protocol AHA-M1-v2.0
+python scripts/fetch_data.py --repo NhatHuy1110/AHA --protocol AHA-M1-v2.1
 ```
 
 Sau khi cài môi trường (mục 3), `python -m aha verify` phải khớp toàn bộ hash. Dữ liệu TMVP/MedHorizon vẫn theo điều khoản gốc: không chuyển dataset sang public khi chưa kiểm tra quyền phân phối lại.
@@ -51,20 +51,20 @@ python -m pytest -q
 
 ## 4. Encoder và cache feature
 
-Encoder mặc định là DINOv3 ViT-L/16. Model này bị gate trên Hub: chấp nhận licence trên trang model và `hf auth login` trước.
+Encoder mặc định là DINOv2 ViT-L/14 (`facebook/dinov2-large`, không bị gate).
 
 ```bash
-python scripts/fetch_encoder.py --id facebook/dinov3-vitl16-pretrain-lvd1689m --name dinov3_vitl16
-python -m aha encode --name dinov3_vitl16 --device cuda --ids 001 --limit 64 --review-dir review/gpu_smoke_encoder
+python scripts/fetch_encoder.py --id facebook/dinov2-large --name dinov2_vitl14
+python -m aha encode --name dinov2_vitl14 --device cuda --ids 001 --limit 64 --review-dir review/gpu_smoke_encoder
 bash scripts/run_server.sh features
 ```
 
-`fetch_encoder.py` ghim commit SHA vào `assets/encoders/<name>/source.json`. Kiểm tra lại tên repo trên Hub trước khi tải; tôi chưa tải thử model này. Giai đoạn `features` chạy `verify`, test, audit, rồi sinh:
+`fetch_encoder.py` ghim commit SHA vào `assets/encoders/<name>/source.json`. Giai đoạn `features` chạy `verify`, test, audit, rồi sinh:
 
-- `artifacts/features/dinov3_vitl16/`: 2048 chiều mỗi giây, đầu vào của model;
+- `artifacts/features/dinov2_vitl14/`: 2048 chiều mỗi giây, đầu vào của model;
 - `artifacts/features/surgformer/`: hidden + score SurgFormer, dùng cho `surgformer_index`, ablation `seen_backbone` và VLM comparator.
 
-Extraction resume theo video. Nếu đổi encoder (ví dụ `facebook/dinov2-large`, không bị gate), dùng `--name` khác và tạo config mới với `features.name` và `model.visual_dim` tương ứng; ghi thành amendment.
+Extraction resume theo video. Nếu đổi encoder (ví dụ DINOv3 `facebook/dinov3-vitl16-pretrain-lvd1689m`, cần được duyệt quyền trên Hub), dùng `--name` khác và tạo config mới với `features.name` và `model.visual_dim` tương ứng; ghi thành amendment.
 
 ## 5. Train cho abstract
 

@@ -8,7 +8,7 @@ cd "$(dirname "$0")/.."
 export PYTHONPATH="$PWD/src:$PWD/vendor${PYTHONPATH:+:$PYTHONPATH}"
 export OMP_NUM_THREADS=4
 stage="${1:?features|abstract|ablation}"
-ENCODER="${ENCODER:-dinov3_vitl16}"
+ENCODER="${ENCODER:-dinov2_vitl14}"
 
 train_matrix() {
   for variant in "$@"; do

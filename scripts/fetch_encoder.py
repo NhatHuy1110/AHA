@@ -1,7 +1,7 @@
 """Download a frozen image encoder at an immutable revision into assets/encoders/<name>/.
 
-Example (DINOv3 is gated: accept its licence on the Hub and `hf auth login` first):
-  python scripts/fetch_encoder.py --id facebook/dinov3-vitl16-pretrain-lvd1689m --name dinov3_vitl16
+Example:
+  python scripts/fetch_encoder.py --id facebook/dinov2-large --name dinov2_vitl14
 """
 import argparse
 import json

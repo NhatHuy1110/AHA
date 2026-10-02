@@ -1,6 +1,6 @@
 # AHA — dense answer–onset grounding for TMVP surgical video QA
 
-Given a full-length thoracoscopic mitral valve repair video, a question about which instrument is visible when a surgical phase begins, and four options, the model returns **an answer and the second it cites as evidence**. Protocol version: AHA-M1-v2.0, fixed in [proposal.md](proposal.md).
+Given a full-length thoracoscopic mitral valve repair video, a question about which instrument is visible when a surgical phase begins, and four options, the model returns **an answer and the second it cites as evidence**. Protocol version: AHA-M1-v2.1, fixed in [proposal.md](proposal.md).
 
 **There are no trained-model results yet.** The code is tested on CPU; feature extraction and training need a GPU server (see [RUNBOOK.md](RUNBOOK.md)).
 
