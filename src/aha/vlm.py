@@ -18,9 +18,10 @@ from .proposals import select_times
 from .frames import FrameStore
 from .evaluate import score_rows,aggregate
 
-# Longest image side per family. Hulu-Med's processor caps the whole prompt at 16,384 tokens,
-# which 64 frames exceed at 448 px; 280 px keeps about 220 visual tokens per frame.
-IMAGE_SIDE=dict(qwen3vl=448,hulumed=280)
+# Longest image side per family. Hulu-Med's vision encoder attends over all frames' patches at
+# once, which runs out of memory on a 24 GB GPU above ~10k patches (and its processor caps the
+# prompt at 16,384 tokens); 224 px gives 144 visual tokens per frame (Qwen3-VL: about 110).
+IMAGE_SIDE=dict(qwen3vl=448,hulumed=224)
 INSTRUCTION=('\nChoose one answer and the onset frame. Return only JSON with keys '
              '"answer" (A, B, C, or D) and "second" (one of the supplied integer timestamps).')
 
