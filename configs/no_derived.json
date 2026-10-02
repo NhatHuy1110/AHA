@@ -1,0 +1,67 @@
+{
+  "protocol": "AHA-M1-v2.0",
+  "features": {
+    "name": "dinov3_vitl16"
+  },
+  "model": {
+    "visual_dim": 2048,
+    "text_dim": 384,
+    "width": 128,
+    "temporal_layers": 10,
+    "fusion_layers": 2,
+    "heads": 4,
+    "dropout": 0.1,
+    "feature_dropout": 0.2,
+    "tool_window": 6,
+    "evidence_floor": -9.2,
+    "variant": "joint",
+    "workflow": "crf",
+    "structured": true,
+    "residual": true
+  },
+  "proposals": {
+    "topk": 16,
+    "nms_seconds": 30,
+    "coverage": 8,
+    "radius": 32
+  },
+  "train": {
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "epochs": 60,
+    "patience": 15,
+    "lr": 0.0005,
+    "warmup_steps": 60,
+    "weight_decay": 0.01,
+    "clip_grad": 1.0,
+    "max_questions": 8,
+    "positive_tolerance": 2,
+    "onset_sigma": 2.0,
+    "use_derived": false,
+    "permute_options": true
+  },
+  "loss": {
+    "joint": 1.0,
+    "answer": 0.5,
+    "hard_negative": 0.1,
+    "text": 0.5,
+    "phase": 0.5,
+    "crf": 0.5,
+    "tool": 1.0,
+    "onset": 0.5
+  },
+  "evaluation": {
+    "primary": "supported_joint@5",
+    "tolerances": [
+      3,
+      5,
+      10,
+      15
+    ],
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20261002
+  }
+}

@@ -1,0 +1,18 @@
+# Public repository: source code only. Data, labels, gold, weights, vendored third-party
+# code and research notes travel through the private Hugging Face dataset (scripts/fetch_data.py).
+/*
+!/.gitignore
+!/.gitattributes
+!/src/
+!/configs/
+!/scripts/
+!/tests/
+!/pyproject.toml
+!/requirements-server.txt
+!/requirements-vlm.txt
+!/README.md
+!/RUNBOOK.md
+!/THIRD_PARTY.md
+__pycache__/
+*.partial
+*.egg-info/

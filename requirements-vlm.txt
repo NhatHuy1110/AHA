@@ -1,0 +1,2 @@
+-r requirements-server.txt
+peft==0.17.1
